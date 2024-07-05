@@ -1,4 +1,4 @@
-import Footer from './Footer.jsx'
+
 import Header from './Header.jsx'
 import Card from './Card.jsx'
 import { BrowserRouter as Router,Route,Switch } from 'react-router-dom'
@@ -17,7 +17,6 @@ function App() {
 
              <Switch> 
               <Route exact path='/'>
-                   <Header />
                    <Landingpage/>
               </Route>
 
@@ -29,7 +28,7 @@ function App() {
               <Route exact path="/Card">
                   <Header />
                   <Card/>
-                  <Footer />
+           
               </Route>
               
               <Route exact path='/Login'>

@@ -19,7 +19,6 @@ setnext(!next);
 
   return (
 
-   
     <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-24 lg:px-8 ">
        <form className="space-y-6" action="#" method="POST">
       <div className="sm:mx-auto sm:w-full sm:max-w-sm">
@@ -52,8 +51,7 @@ setnext(!next);
                 className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
               >
                 <div >
-                  <div className="w-full text-lg font-semibold">I am a</div>
-                  <div className="w-full">Tutor</div>
+                  <div className="w-full text-lg font-semibold">I am a Tutor</div>
                   <img></img>
                 </div>
               </label>
@@ -72,9 +70,8 @@ setnext(!next);
                 htmlFor="hosting-big"
                 className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
               >
-                <div className="block">
-                  <div className="w-full text-lg font-semibold">I am a</div>
-                  <div className="w-full">Student</div>
+                <div className="flex-1 flex justify-between">
+                  <div className="w-full text-lg font-semibold">I am a Student</div>
                   <img src={studlogo} className='h-10 justify-items-end flex'></img>
                 </div>
               </label>

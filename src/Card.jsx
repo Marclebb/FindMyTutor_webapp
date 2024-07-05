@@ -15,8 +15,8 @@ function Card() {
  
   return (
     <div>
-      {loading && <div><h1>Loading...</h1></div>}
-      {errmessage && <div><h2>{errmessage}</h2></div>}
+      {loading && <div className='h-screen w-screen flex justify-center items-center'><h1 className='lg:text-xl sm:text-lg'>Loading...</h1></div>}
+      {errmessage && <div className='h-screen w-screen flex justify-center items-center'><h2 className='lg:text-xl sm:text-lg'>{errmessage}</h2></div>}
       {cards && <Cardlist cards={cards} title="All available tutors" />}
       {cards && <Cardlist cards={cards.filter((card)=>card.subject===subids.i2)} title=" Physics tutors" />}
       {cards && <Cardlist cards={cards.filter((card)=>card.subject===subids.i1)} title=" Maths tutors"/>}
