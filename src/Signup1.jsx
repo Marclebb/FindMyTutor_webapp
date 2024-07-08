@@ -3,15 +3,17 @@ import studlogo from './assets/studlogo.png'
 import { Link} from 'react-router-dom';
 import { useState } from 'react';
 import { toast } from 'react-toastify';
+import tutorlogo from './assets/tutor.png'
 import 'react-toastify/dist/ReactToastify.css';
 
 function Signup1() {
   const [isvalid, setIsValid] = useState(false);
   const [next,setnext]=useState(false)
- 
+  const [formvalid,setform]=useState(false)
+
   const handleform = () =>{
     if (!isvalid) {
-      toast.error('Please choose your account type', { position: 'top-center', autoClose: 2000 });
+      toast.error('Please choose your account type', { position: 'top-center', autoClose: 800 });
     } else {
 setnext(!next);
     }
@@ -50,9 +52,9 @@ setnext(!next);
                 htmlFor="hosting-small"
                 className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
               >
-                <div >
+                <div className='flex-1 flex justify-between'>
                   <div className="w-full text-lg font-semibold">I am a Tutor</div>
-                  <img></img>
+                  <img src={tutorlogo} className='h-10 justify-items-end flex'></img>
                 </div>
               </label>
             </li>
@@ -88,7 +90,7 @@ setnext(!next);
               id="firstname"
               name="firstname"
               type="text"
-              required
+              
               className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
             <label  className="block text-sm font-medium leading-6 text-gray-900">
@@ -99,7 +101,7 @@ setnext(!next);
               id="lastname"
               name="lastname"
               type="text"
-              required
+             
               className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -112,7 +114,7 @@ setnext(!next);
               name="Email"
               type="email"
               autoComplete='email'
-              required
+            
               className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
@@ -124,7 +126,7 @@ setnext(!next);
               id="password"
               name="password"
               type="password"
-              required
+             
               className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
             />
           </div>
