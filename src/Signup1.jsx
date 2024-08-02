@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-
-import axios from 'axios';
+import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import studlogo from './assets/studlogo.png';
 import tutorlogo from './assets/tutor.png';
@@ -13,9 +12,13 @@ function Signup1() {
   const { register, handleSubmit, formState: { errors, isSubmitted }, watch, trigger } = useForm();
   const password = watch("password");
 
+  Axios.defaults.withCredentials=true;
+
   const onSubmit = (data) => {
-    axios.post("http://localhost:3001/users",data).then((response)=>{
-         setListOfUsers(response.data);
+    Axios.post("http://localhost:3001/users",data).then((response)=>{
+         console.log(response.data);
+  }).catch((error)=>{
+    console.log(error)
   })
      console.log("Data sent successfully")
 };

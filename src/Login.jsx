@@ -1,25 +1,36 @@
-import { useState } from 'react';
-import axios from 'axios';
+import { useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import { Link } from 'react-router-dom';
 
 function Login() {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const { register, handleSubmit, formState: {errors,isSubmitted}} = useForm();
+    const [loginstatus,setloginstatus]=useState("")
 
-    const handleSubmit = async (event) => {
-        event.preventDefault(); // Prevent default form submission
-        const data = { Email: email, password }; // Form data
-        
-        try {
-            const response = await axios.post("http://localhost:3001/users/login", data);
-            console.log("Login successful", response.data);
-            alert("Login successful");
-        } catch (error) {
-            console.error("Error logging in", error.response?.data || error.message);
-            alert("Login failed");
-        }
+    Axios.defaults.withCredentials=true;
+
+    const onsubmit = (data) => {
+        Axios.post("http://localhost:3001/login", data)
+            .then((response) => {
+                console.log(response.data);
+                if (response.data.message) {
+                    setloginstatus(response.data.message);
+                } else {
+                    setloginstatus("Welcome " + response.data.firstname + "!");
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
     };
+
+    useEffect(() => {
+        Axios.get("http://localhost:3001/login")
+            .then((response) => {
+                if(response.data.loggedIn===true)
+                setloginstatus("welcome " + response.data.user.firstname + "!");
+            });
+    }, []);
 
     return (
         <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-24 lg:px-8 ">
@@ -33,7 +44,7 @@ function Login() {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm ">
-                <form className="space-y-6" onSubmit={handleSubmit}>
+                <form className="space-y-6" onSubmit={handleSubmit(onsubmit)}>
                     <div>
                        <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                             Email address
@@ -42,13 +53,16 @@ function Login() {
                             <input
                                 id="Email"
                                 name="Email"
-                                type="email"
-                                autoComplete="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                type="text"
+                                
+                                {...register("Email",{required:"Enter your email",
+                                pattern: { 
+                                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i, 
+                                    message: "Invalid email Format" } })}
                                 className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                         </div>
+                        {isSubmitted && errors.Email && <div className='text-red-500'>{errors.Email.message}</div>}
                     </div>
 
                     <div>
@@ -68,11 +82,12 @@ function Login() {
                                 name="password"
                                 type="password"
                                 autoComplete="current-password"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
+                               
+                                {...register("password",{required:"Enter your password"})}
                                 className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                         </div>
+                        {isSubmitted && errors.password && <div className='text-red-500'>{errors.password.message}</div>}
                     </div>
 
                     <div>
@@ -92,6 +107,7 @@ function Login() {
                     </Link>
                 </p>
             </div>
+            <h1>{loginstatus}</h1>
         </div>
     );
 }
