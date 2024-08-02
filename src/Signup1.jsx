@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import studlogo from './assets/studlogo.png';
@@ -11,16 +12,35 @@ function Signup1() {
   const [next, setNext] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitted }, watch, trigger } = useForm();
   const password = watch("password");
+  const history=useHistory();
 
   Axios.defaults.withCredentials=true;
 
-  const onSubmit = (data) => {
+
+  const checkEmailExists = async (email) => {
+    try {
+      const response = await Axios.get('http://localhost:3001/emailexists', { params: { Email: email } });
+      return response.data.exists;
+    } catch (error) {
+      console.error(error);
+      return false;
+    }
+  };
+
+  const onSubmit = async (data) => {
+    const emailExists = await checkEmailExists(data.Email);
+    if (emailExists) {
+      setError('Email', { type: 'manual', message: 'Email already taken' });
+      return;
+    }
+
     Axios.post("http://localhost:3001/users",data).then((response)=>{
          console.log(response.data);
   }).catch((error)=>{
     console.log(error)
   })
      console.log("Data sent successfully")
+     history.push("/Login")
 };
   
   const handleNextClick = async () => {
@@ -128,10 +148,17 @@ function Signup1() {
                 id="Email"
                 name="Email"
                 type="text"
-                {...register("Email", { required: "Email is required", 
-                pattern: { 
-                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i, 
-                message: "Invalid email address" } })}
+                {...register("Email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                    message: "Invalid email address"
+                  },
+                  validate: async (value) => {
+                    const emailExists = await checkEmailExists(value);
+                    return !emailExists || "Email already taken";
+                  }
+                })}
                 className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {isSubmitted && errors.Email && <div className='text-red-500'>{errors.Email.message}</div>}

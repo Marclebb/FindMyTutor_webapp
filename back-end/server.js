@@ -2,46 +2,21 @@ const express = require('express');
 const cors = require('cors');
 const mysql = require('mysql2');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const session = require('express-session');
 
-const saltRounds = 10;
 const app = express();
 
 app.use(express.json());
-
-// CORS configuration with explicit headers
 app.use(cors({
-    origin: ["http://localhost:5173"], 
+    origin: ["http://localhost:5173"],
     methods: ["GET", "POST"],
     credentials: true
 }));
-
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// Session configuration
-app.use(session({
-    key: "userid",
-    secret: "secretcode78",
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        expires: 60 * 60 * 24 * 7, // 1 week
-    }
-}));
-
-// Additional middleware to confirm CORS headers are correctly set
-app.use((req, res, next) => {
-    res.header("Access-Control-Allow-Origin", "http://localhost:5173");
-    res.header("Access-Control-Allow-Credentials", "true");
-    res.header("Access-Control-Allow-Methods", "GET, POST");
-    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
-    next();
-});
-
-// Database connection
 const db = mysql.createConnection({
     user: "root",
     host: "localhost",
@@ -49,27 +24,27 @@ const db = mysql.createConnection({
     database: "fmt_test_database"
 });
 
-// User registration route
+const secret = "your_jwt_secret"; // Replace with your own secret
+
 app.post("/users", (req, res) => {
     const { firstname, lastname, Email, accounttype, password } = req.body;
 
-    bcrypt.hash(password, saltRounds, (err, hash) => {
+    bcrypt.hash(password, 10, (err, hash) => {
         if (err) {
             console.log(err);
-            return res.status(500).send('Error hashing password');
         }
-        db.query("INSERT INTO users (firstname, lastname, Email, accounttype, password) VALUES (?, ?, ?, ?, ?)",
+        db.query("INSERT into users (firstname, lastname, Email, accounttype, password) VALUES (?,?,?,?,?)",
             [firstname, lastname, Email, accounttype, hash], (err, result) => {
                 if (err) {
                     console.log(err);
-                    return res.status(500).send('Error inserting data into the database');
+                    res.status(500).send('Error inserting data into the database');
+                } else {
+                    res.status(201).send('User added successfully');
                 }
-                res.status(201).send('User added successfully');
             });
     });
 });
 
-// Login route with session management
 app.post("/login", (req, res) => {
     const { Email, password } = req.body;
 
@@ -82,28 +57,68 @@ app.post("/login", (req, res) => {
         if (result.length > 0) {
             bcrypt.compare(password, result[0].password, (error, response) => {
                 if (response) {
-                    req.session.user = result[0]; // Store user info in session
-                    res.send({ firstname: result[0].firstname });
-                    console.log(req.session.user);
+                    const token = jwt.sign({ id: result[0].id }, secret, { expiresIn: '7d' });
+                    res.json({ auth: true, token: token, user: result[0] });
                 } else {
-                    res.send({ message: "Wrong Email/password, please try again!" });
+                    res.send({ message: "Wrong Email/password , please try again!" });
                 }
             });
         } else {
-            res.send({ message: "User doesn't exist!" });
+            res.send({ message: "User doesn't exist! " });
         }
     });
 });
 
-// Route to check login status
-app.get("/login", (req, res) => {
-    if (req.session.user) {
-        res.send({ loggedIn: true, user: req.session.user });
+// Middleware to verify JWT
+const verifyJWT = (req, res, next) => {
+    const token = req.headers["x-access-token"];
+
+    if (!token) {
+        res.send({ auth: false, message: "No token provided." });
     } else {
-        res.send({ loggedIn: false });
+        jwt.verify(token, secret, (err, decoded) => {
+            if (err) {
+                res.send({ auth: false, message: "Failed to authenticate token." });
+            } else {
+                req.userId = decoded.id;
+                next();
+            }
+        });
     }
+};
+
+app.get("/isUserAuth", verifyJWT, (req, res) => {
+    db.query("SELECT * FROM users WHERE id = ?", [req.userId], (err, result) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error fetching user data');
+        }
+
+        if (result.length > 0) {
+            res.send({ auth: true, user: result[0] });
+        } else {
+            res.send({ auth: false, message: "User doesn't exist! " });
+        }
+    });
 });
 
+app.get("/emailexists",(req,res)=>{
+    const {Email}=req.query;
+    db.query("SELECT * FROM users WHERE Email= ?",[Email],(err,result)=>{
+        if(err){
+            console.log(err);
+            return res.status(500).send("error fetching email")
+        }
+        if(result.length > 0){
+            res.send({exists:true})
+        }
+        else{
+            res.send({exists:false})
+        }
+    })
+})
+
 app.listen(3001, () => {
-    console.log("Server is running on port 3001");
+    console.log("Server running on port 3001");
 });
+

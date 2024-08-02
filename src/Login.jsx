@@ -1,35 +1,46 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import { Link } from 'react-router-dom';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { Warning } from 'postcss';
 
-function Login() {
+function Login({setauth,setuser}) {
     const { register, handleSubmit, formState: {errors,isSubmitted}} = useForm();
     const [loginstatus,setloginstatus]=useState("")
-
+    const history=useHistory()
     Axios.defaults.withCredentials=true;
 
     const onsubmit = (data) => {
-        Axios.post("http://localhost:3001/login", data)
-            .then((response) => {
-                console.log(response.data);
-                if (response.data.message) {
-                    setloginstatus(response.data.message);
-                } else {
-                    setloginstatus("Welcome " + response.data.firstname + "!");
-                }
-            }).catch((error) => {
-                console.log(error);
-            });
+        Axios.post("http://localhost:3001/login", data).then((response) => {
+            if (response.data.auth) {
+                localStorage.setItem("token", response.data.token);
+                setauth(true);
+                setuser(response.data.user)
+             //   setloginstatus("Welcome " + response.data.firstname + "!");
+                history.push("/card")
+            } else {
+                //setloginstatus(response.data.message);
+                    toast(response.data.message,{position:"top-center",autoClose:1000,type:'error'});
+                  
+            }
+        }).catch((error) => {
+            console.log(error);
+        });
     };
 
     useEffect(() => {
-        Axios.get("http://localhost:3001/login")
-            .then((response) => {
-                if(response.data.loggedIn===true)
-                setloginstatus("welcome " + response.data.user.firstname + "!");
-            });
+        Axios.get("http://localhost:3001/isUserAuth", {
+            headers: {
+                "x-access-token": localStorage.getItem("token")
+            }
+        }).then((response) => {
+            if (response.data.auth) {
+                setloginstatus("Welcome back!");
+            }
+        });
     }, []);
 
     return (
@@ -108,6 +119,7 @@ function Login() {
                 </p>
             </div>
             <h1>{loginstatus}</h1>
+
         </div>
     );
 }
