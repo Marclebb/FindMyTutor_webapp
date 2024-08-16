@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
+import { toast,ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import { Link } from 'react-router-dom';
@@ -23,7 +24,7 @@ function Login({setauth,setuser}) {
                 history.push("/card")
             } else {
                 //setloginstatus(response.data.message);
-                    toast(response.data.message,{position:"top-center",autoClose:1000,type:'error'});
+                    toast.error(response.data.message,{position:"top-center",autoClose:1000,type:'error'});
                   
             }
         }).catch((error) => {

@@ -25,7 +25,7 @@ function App() {
             }).then(response => {
                 if (response.data.auth) {
                     setauth(true);
-                    setUser(response.data.user);
+                    setuser(response.data.user);
                 } else {
                     setauth(false);
                 }
@@ -71,6 +71,7 @@ function App() {
                         
                     </Route>
                     <Route exact path='/Profile'>
+                        <Header/>
                         {auth ? <Profile setauth={setauth} /> : <Redirect to="/Login" />}
                     </Route>
                 </Switch>

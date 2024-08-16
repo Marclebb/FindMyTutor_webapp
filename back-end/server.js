@@ -27,14 +27,14 @@ const db = mysql.createConnection({
 const secret = "your_jwt_secret"; // Replace with your own secret
 
 app.post("/users", (req, res) => {
-    const { firstname, lastname, Email, accounttype, password } = req.body;
+    const { firstname, lastname,phoneNumber,Email, accounttype, password,profilePicture,Bio } = req.body;
 
     bcrypt.hash(password, 10, (err, hash) => {
         if (err) {
             console.log(err);
         }
-        db.query("INSERT into users (firstname, lastname, Email, accounttype, password) VALUES (?,?,?,?,?)",
-            [firstname, lastname, Email, accounttype, hash], (err, result) => {
+        db.query("INSERT into users (firstname, lastname,phoneNumber,Email, accounttype, password, profilePicture ,Bio) VALUES (?,?,?,?,?,?,?,?)",
+            [firstname, lastname,phoneNumber ,Email, accounttype, hash,profilePicture,Bio], (err, result) => {
                 if (err) {
                     console.log(err);
                     res.status(500).send('Error inserting data into the database');
@@ -44,6 +44,34 @@ app.post("/users", (req, res) => {
             });
     });
 });
+
+app.get("/users/profile", (req, res) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+        return res.status(401).json({ message: "No token provided, authorization denied." });
+    }
+    jwt.verify(token, secret, (err, decoded) => {
+        if (err) {
+            return res.status(401).json({ message: "Invalid token, authorization denied." });
+        }
+
+        const userId = decoded.id; 
+        db.query("SELECT * FROM users WHERE id = ?", [userId], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ message: "Database error." });
+            }
+            if (result.length > 0) {
+                console.log("User data being sent:", result[0]); // Add this line
+                res.json(result[0]); // return user information
+            } else {
+                res.status(404).json({ message: "User not found." });
+            }
+        }); 
+    });
+    });
+
+
 
 app.post("/login", (req, res) => {
     const { Email, password } = req.body;
