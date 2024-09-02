@@ -11,16 +11,19 @@ function Header() {
 return (
     <div className=" pb-10 sticky top-0">
       <header className="absolute inset-x-0 top-0 z-50">
+        
         <nav className="flex items-center justify-between p-2 lg:px-8 bg-white" aria-label="Global">
+       
           <div className="flex lg:flex-1">
             <Link to="/" className="m-1.5 p-1.5">
-              <span className="sr-only">Your Company</span>
+              <span className="sr-only">Logo</span>
               <img
                 className="h-8 w-auto"
                 src={Logo}
                 alt=""
               />
             </Link>
+          
           </div>
           <div className="flex lg:hidden">
             <button
@@ -28,26 +31,31 @@ return (
               className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
               onClick={() => setIsMenuOpen(true)}
             >
+
               <span className="sr-only">Open main menu</span>
               <Bars3Icon className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
+        
           <div className="hidden lg:flex lg:gap-x-12">
+           
             <Link to="/Card" className={`p-2 ${location.pathname === '/Card' ? 'border-b-4 border-yellow-400' : ''} hover:border-b-4 border-yellow-400`}>All tutors</Link>
             <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create Request</Link>
             <Link to="/MyMatches" className={`p-2 ${location.pathname === '/MyMatches' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>My Matches</Link>
             <Link to="/Profile" className={`p-2 ${location.pathname === '/Profile' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Profile</Link>
           </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-           
+          
+         <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+          
           </div>
+
         </nav>
         <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setIsMenuOpen}>
           <div className="fixed inset-0 z-50" />
           <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
             <div className="flex items-center justify-between">
               <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">Your Company</span>
+                <span className="sr-only">Logo</span>
                 <img
                   className="h-8 w-auto"
                   src={Logo}

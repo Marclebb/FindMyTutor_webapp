@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useNavigate} from 'react-router-dom/';
 import {storage} from './firebase';
 import {v4 as uuidv4} from 'uuid';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
@@ -12,10 +12,11 @@ import tutorlogo from './assets/tutor.png';
 
 
 function Signup1() {
+  const [isSubmiting,setisSubmiting]=useState(false)
   const [next, setNext] = useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitted }, watch, trigger } = useForm();
   const password = watch("password");
-  const history=useHistory();
+  const Navigate=useNavigate();
 
   Axios.defaults.withCredentials=true;
 
@@ -36,7 +37,7 @@ function Signup1() {
         setError('Email', { type: 'manual', message: 'Email already taken' });
         return;
     }
-
+    setisSubmiting(true)
     let imageUrl;
 
     if (data.profilePicture && data.profilePicture.length > 0) {
@@ -58,11 +59,13 @@ function Signup1() {
     Axios.post("http://localhost:3001/users", formData)
         .then((response) => {
             console.log(response.data);
-            history.push("/Login");
+            Navigate("/Login");
         })
         .catch((error) => {
             console.log(error);
         });
+         
+
 };
 
 
@@ -96,7 +99,7 @@ function Signup1() {
             <ul className="grid w-full gap-6 md:grid-cols-1">
               <li>
                 <input
-                  {...register("accounttype", { required: "Choose what you are" })}
+                  {...register("accounttype", { required: "Choose what account type you want to create" })}
                   type="radio"
                   id="tutor"
                   value="tutor"
@@ -115,7 +118,7 @@ function Signup1() {
               </li>
               <li>
                 <input
-                  {...register("accounttype", { required: "Choose what you are" })}
+                  {...register("accounttype", { required: "Choose what type of account you want to create" })}
                   type="radio"
                   id="student"
                   name="accounttype"
@@ -174,6 +177,7 @@ function Signup1() {
                          id="PhoneNumber"
                          name="phoneNumber"
                           type="tel"
+                          defaultValue="+961"
                          {...register("phoneNumber", {
                             required: "Phone number is required",
                             pattern: {
@@ -293,12 +297,23 @@ function Signup1() {
           <button type="button" onClick={handleNextClick} className={`${!next ? 'block' :'hidden'} mt-5 border-2 rounded-md pl-3 pr-3 p-3 bg-sky-400 flex text-white shadow-sm hover:bg-indigo-500`}>
             Next
           </button>
-          <button type="submit" className={`${next ? 'flex' : 'hidden'} mt-5 border-2 rounded-md pl-3 pr-3 p-3 bg-sky-400 flex text-white shadow-sm hover:bg-indigo-500`}>
+        {!isSubmiting &&  <button type="submit" 
+          className={`${next ? 'flex' : 'hidden'} mt-5 border-2 rounded-md pl-3 pr-3 p-3 bg-sky-400 flex text-white shadow-sm hover:bg-indigo-500`}
+         
+          >
             Submit
-          </button>
+          </button>}
         </div>
         </div>
-
+       {isSubmiting && <div className="flex-col gap-4 w-full flex items-center justify-center">
+  <div
+    class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-yellow-400 rounded-full"
+  >
+    <div
+      className="w-16 h-16 border-4 border-transparent text-sky-400 text-2xl animate-spin flex items-center justify-center border-t-sky-400 rounded-full"
+    ></div>
+  </div>
+</div>}
       </form>
     </div>
   );

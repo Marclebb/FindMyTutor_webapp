@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import Header from './Header.jsx';
 import Card from './Card.jsx';
@@ -8,7 +8,10 @@ import Landingpage from './landingpage.jsx';
 import Login from './Login.jsx';
 import Signup1 from './Signup1.jsx';
 import Profile from './Profile.jsx';
+import EditProfile from './EditProfile.jsx';
+import Deleteaccount from './Deleteaccount.jsx';
 import { ToastContainer } from 'react-toastify';
+
 
 function App() {
     const [auth, setauth] = useState(false);
@@ -29,56 +32,81 @@ function App() {
                 } else {
                     setauth(false);
                 }
-                setLoading(false); // Set loading to false after the check
+                setLoading(false);
             }).catch(error => {
                 console.error(error);
-                setLoading(false); // Set loading to false in case of error
+                setLoading(false);
             });
         } else {
-            setLoading(false); // Set loading to false if no token
+            setLoading(false);
         }
     }, []);
 
     if (loading) {
-        return <div>Loading...</div>; // Show a loading indicator while checking auth
+        return <div>
+            <div className="flex-col gap-4 w-full flex items-center justify-center">
+        <div
+          className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-yellow-400 rounded-full"
+        >
+          <div
+            className="w-16 h-16 border-4 border-transparent text-red-400 text-2xl animate-spin flex items-center justify-center border-t-sky-400 rounded-full"
+          ></div>
+        </div>
+      </div>
+      </div>;
     }
 
     return (
-        <>
-            <Router>
-                <Switch>
-                    <Route exact path='/'>
-                        <Landingpage />
-                    </Route>
-                    <Route exact path="/CreateRequest">
-                        {auth ? <>
+        <Router>
+            <Routes>
+                <Route path='/' element={<Landingpage />} />
+                
+                <Route path="/CreateRequest" element={
+                    auth ? (
+                        <>
                             <Header />
                             <Create />
-                        </> : <Redirect to="/Login" />}
-                    </Route>
-                    <Route exact path="/Card">
-                        {auth ? <>
+                        </>
+                    ) : <Navigate to="/Login" />
+                } />
+                
+                <Route path="/Card" element={
+                    auth ? (
+                        <>
                             <Header />
                             <Card />
-                        </> : <Redirect to="/Login" />}
-                    </Route>
-                    <Route exact path='/Login'>
-                    <ToastContainer />
-                        {auth ? <Redirect to="/Card" /> : <Login setauth={setauth} setUser={setuser} />}
-                    </Route>
-                    <Route exact path='/Signup1'>
-                        <Signup1 />
-                        
-                    </Route>
-                    <Route exact path='/Profile'>
-                        <Header/>
-                        {auth ? <Profile setauth={setauth} /> : <Redirect to="/Login" />}
-                    </Route>
-                </Switch>
-            </Router>
-        </>
+                        </>
+                    ) : <Navigate to="/Login" />
+                } />
+                
+                <Route path='/Login' element={
+                    <>
+                        <ToastContainer />
+                        {auth ? <Navigate to="/Card" /> : <Login setauth={setauth} setUser={setuser} />}
+                    </>
+                } />
+                
+                <Route path='/Signup1' element={<Signup1 />} />
+                
+                <Route path='/Profile' element={
+                    auth ? (
+                        <>
+                            <Header/>
+                            <Profile setauth={setauth} />
+                        </>
+                    ) : <Navigate to="/Login" />
+                } />
+                
+                <Route path="/EditProfile" element={
+                    auth ? <EditProfile /> : <Navigate to="/Login" />
+                } />
+
+                <Route path="/Deleteaccount" element={
+                    auth ? <Deleteaccount setauth={setauth}/> : <Navigate to="/Login" />
+                }/>
+            </Routes>
+        </Router>
     );
 }
 
 export default App;
-

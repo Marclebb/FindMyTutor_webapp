@@ -8,7 +8,7 @@ export default {
     extend: {
       backgroundImage:{
         'im1':"url(./src/assets/tutor.jpg)",
-        'im2':"url(./src/assets/background1.jpg)"
+        'im2':"url(./src/assets/backgound1.jpg)"
       }
     },
     

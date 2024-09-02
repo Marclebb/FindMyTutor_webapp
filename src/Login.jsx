@@ -5,13 +5,13 @@ import 'react-toastify/dist/ReactToastify.css';
 import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import { Link } from 'react-router-dom';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
+import { useNavigate } from 'react-router-dom/';
 import { Warning } from 'postcss';
 
 function Login({setauth,setuser}) {
     const { register, handleSubmit, formState: {errors,isSubmitted}} = useForm();
     const [loginstatus,setloginstatus]=useState("")
-    const history=useHistory()
+    const history=useNavigate()
     Axios.defaults.withCredentials=true;
 
     const onsubmit = (data) => {
@@ -20,7 +20,7 @@ function Login({setauth,setuser}) {
                 localStorage.setItem("token", response.data.token);
                 setauth(true);
                 setuser(response.data.user)
-             //   setloginstatus("Welcome " + response.data.firstname + "!");
+                //setloginstatus("Welcome " + response.data.firstname + "!");
                 history.push("/card")
             } else {
                 //setloginstatus(response.data.message);
@@ -39,7 +39,7 @@ function Login({setauth,setuser}) {
             }
         }).then((response) => {
             if (response.data.auth) {
-                setloginstatus("Welcome back!");
+                setloginstatus("");
             }
         });
     }, []);
