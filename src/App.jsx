@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import axios from 'axios';
 import Header from './Header.jsx';
 import Card from './Card.jsx';
-import Create from './CreateRequest.jsx';
+import CreateRequest from './CreateRequest.jsx';
 import Landingpage from './landingpage.jsx';
 import Login from './Login.jsx';
 import Signup1 from './Signup1.jsx';
@@ -65,7 +65,7 @@ function App() {
                     auth ? (
                         <>
                             <Header />
-                            <Create />
+                            <CreateRequest/>
                         </>
                     ) : <Navigate to="/Login" />
                 } />

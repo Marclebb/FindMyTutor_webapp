@@ -9,8 +9,8 @@ function Header() {
    const location = useLocation();
 
 return (
-    <div className=" pb-10 sticky top-0">
-      <header className="absolute inset-x-0 top-0 z-50">
+    <div className=" pb-10 sticky z-50 top-0">
+      <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
         
         <nav className="flex items-center justify-between p-2 lg:px-8 bg-white" aria-label="Global">
        
@@ -50,18 +50,10 @@ return (
           </div>
 
         </nav>
-        <Dialog as="div" className="lg:hidden" open={mobileMenuOpen} onClose={setIsMenuOpen}>
-          <div className="fixed inset-0 z-50" />
+        <Dialog as="div" className="lg:hidden " open={mobileMenuOpen} onClose={setIsMenuOpen}>
+          <div className="sticky top-0 inset-0 z-50 shadow-md" />
           <Dialog.Panel className="fixed inset-y-0 right-0 z-50 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
-            <div className="flex items-center justify-between">
-              <a href="#" className="-m-1.5 p-1.5">
-                <span className="sr-only">Logo</span>
-                <img
-                  className="h-8 w-auto"
-                  src={Logo}
-                  alt=""
-                />
-              </a>
+            <div className="flex items-center justify-end">
               <button
                 type="button"
                 className="-m-2.5 rounded-md p-2.5 text-gray-700"
