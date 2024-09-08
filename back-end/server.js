@@ -27,7 +27,7 @@ const db = mysql.createConnection({
     database: "fmt_test_database"
 });
 
-const secret = "your_jwt_secret"; 
+const secret = "my_jwt_secret"; 
 // Middleware to verify JWT
 const verifyJWT = (req, res, next) => {
     const token = req.headers["x-access-token"];
@@ -95,7 +95,7 @@ app.post("/login", (req, res) => {
         if (result.length > 0) {
             bcrypt.compare(password, result[0].password, (error, response) => {
                 if (response) {
-                    const token = jwt.sign({ id: result[0].id }, secret, { expiresIn: '7d' });
+                    const token = jwt.sign({ id: result[0].id, role: result[0].accounttype }, secret, { expiresIn: '7d' });
                     res.json({ auth: true, token: token, user: result[0] });
                 } else {
                     res.send({ message: "Wrong Email/password , please try again!" });

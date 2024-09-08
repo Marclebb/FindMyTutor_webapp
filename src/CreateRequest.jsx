@@ -1,35 +1,60 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import icon from './assets/teacher.png';
-import { useEffect } from 'react';
+import tutoricon from './assets/teacher.png';
+import studicon from './assets/student.png';
+import {jwtDecode} from 'jwt-decode'; // Use the correct import for jwt-decode
 
 function CreateRequest() {
-  const { register, handleSubmit,setValue ,watch,formState: { errors },} = useForm();
-
-  const [next, setNext] = React.useState(false);
+  const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
+  const [next, setNext] = useState(false);
+  const [role, setRole] = useState(null);
 
   const onSubmit = (data) => {
-    console.log(data); // Handle form data submission here
+    console.log(data); 
   };
 
   const watchLearningWay = watch('learningway');
 
   useEffect(() => {
-    
-    if (watchLearningWay!== 'onsite') {
-      setValue('location', null);
+    if (watchLearningWay !== 'onsite') {
+      setValue('location', null); 
     }
   }, [watchLearningWay, setValue]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      setRole(decoded.role);
+      console.log("role is :", decoded.role)
+    } else {
+      
+      console.log("No token found, user needs to log in");
+    }
+  }, []);
   
   return (
     <div className="font-[sans-serif] bg-gray-50 min-h-screen lg:mt-2 pt-20 relative z-10">
       {/* Intro Section */}
       <div className={`flex flex-col items-center justify-center text-center ${next ? 'hidden' : 'content'}`}>
+        {role === 'student' && ( 
+          <div>
         <h1 className="pb-6 text-xl sm:text-2xl md:text-2xl lg:text-3xl">Welcome to the CreateRequest page</h1>
-        <img src={icon} alt="icon" className="mx-auto h-40 w-auto pt-4 pb-5 rounded-lg" />
+      <img src={studicon} alt="icon" className="mx-auto h-40 w-auto pt-4 pb-5 rounded-lg" />
         <p className="pt-6 text-sm sm:text-sm md:text-base lg:text-base">In this page you can create a personalized request for your preferred tutor</p>
         <p className="text-sm sm:text-sm md:text-base lg:text-base">Choose from various elements: like the preferred course, a preferred schedule, </p>
         <p className="text-sm sm:text-sm md:text-base lg:text-base">a price you are willing to pay, and more...</p>
+        </div>
+        )}
+        {role === 'tutor' && ( 
+          <div>
+           <h1 className="pb-6 text-xl sm:text-2xl md:text-2xl lg:text-3xl">Welcome to the CreatePost page</h1>
+           <img src={tutoricon} alt="icon" className="mx-auto h-40 w-auto pt-4 pb-5 rounded-lg" />
+           <p className="pt-6 text-sm sm:text-sm md:text-base lg:text-base">In this page you can create a Post and let students discover you</p>
+           <p className="text-sm sm:text-sm md:text-base lg:text-base">Choose from various elements: like the course you're teaching,your schedule, </p>
+           <p className="text-sm sm:text-sm md:text-base lg:text-base">the hourly price you're setting, and more...</p>
+           </div>
+        )}
         <button
           className="px-4 py-1.5 mt-4 rounded-md bg-sky-500 hover:bg-indigo-500 text-white transition-all"
           onClick={() => setNext(true)}
@@ -232,6 +257,25 @@ function CreateRequest() {
             )}
           </div>
         </div>
+        {role === 'tutor' && (
+  <div>
+   
+    <div className="mt-2 lg:flex lg:justify-center lg:items-center lg:mt-7">
+    <label className=" ml-5 block text-sm font-medium leading-6 text-black mr-3 z-10" htmlFor="description">
+      Enter a description
+    </label>
+      <textarea
+        id="description"
+        name="description"  
+        maxLength={350}
+        rows={6}
+        cols={50}
+        className="ml-5 bg-transparent lg:w-4/12 w-11/12 h-auto resize-none border border-gray-300 p-2 rounded-md disabled:opacity-50 relative z-0"
+        {...register("description", { required: false })}  
+      />
+    </div>
+  </div>
+)}
 
         {/* Submit Button */}
         <div className="flex justify-center mt-8 pb-8">

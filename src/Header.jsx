@@ -1,12 +1,26 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { Dialog } from '@headlessui/react';
 import { Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
 import { Link, useLocation } from 'react-router-dom';
 import Logo from './assets/scholarship.png';
+import { jwtDecode } from 'jwt-decode';
 
 function Header() {
    const [mobileMenuOpen, setIsMenuOpen] = useState(false);
+   const [role, setRole] = useState(null);
    const location = useLocation();
+
+   useEffect(() => {
+    const token = localStorage.getItem('token');
+    if (token) {
+      const decoded = jwtDecode(token);
+      setRole(decoded.role);
+      console.log("role is :", decoded.role)
+    } else {
+      // Redirect to login page or show a message
+      console.log("No token found, user needs to log in");
+    }
+  }, []);
 
 return (
     <div className=" pb-10 sticky z-50 top-0">
@@ -40,7 +54,12 @@ return (
           <div className="hidden lg:flex lg:gap-x-12">
            
             <Link to="/Card" className={`p-2 ${location.pathname === '/Card' ? 'border-b-4 border-yellow-400' : ''} hover:border-b-4 border-yellow-400`}>All tutors</Link>
+            {role === 'student' &&  (
             <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create Request</Link>
+            )}
+             {role === 'tutor' &&  (
+            <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create post</Link>
+            )}
             <Link to="/MyMatches" className={`p-2 ${location.pathname === '/MyMatches' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>My Matches</Link>
             <Link to="/Profile" className={`p-2 ${location.pathname === '/Profile' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Profile</Link>
           </div>
@@ -68,7 +87,12 @@ return (
                 <div className="py-6">
                 
                   <Link to="/Card" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>Homepage</Link>
-                  <Link to="/CreateRequest" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>Create Request</Link>
+                  {role === 'student' &&  (
+            <Link to="/CreateRequest" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" onClick={()=>setIsMenuOpen(false)}>Create Request</Link>
+            )}
+             {role === 'tutor' &&  (
+            <Link to="/CreateRequest" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" onClick={()=>setIsMenuOpen(false)}>Create Post</Link>
+            )}
                   <Link to="/MyMatches" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>My Matches</Link>
                   <Link to="/Profile" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>Profile</Link>
                 </div>
