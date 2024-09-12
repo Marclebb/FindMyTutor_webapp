@@ -21,7 +21,7 @@ function App() {
     useEffect(() => {
         const token = localStorage.getItem("token");
         if (token) {
-            axios.get("http://localhost:3001/isUserAuth", {
+            axios.get("http://localhost:3001/auth/isUserAuth", {
                 headers: {
                     "x-access-token": token
                 }

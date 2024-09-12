@@ -14,8 +14,8 @@ import tutorlogo from './assets/tutor.png';
 function Signup1() {
   const [isSubmiting,setisSubmiting]=useState(false)
   const [next, setNext] = useState(false);
-  const [istutor,setistutor]=useState(false);
   const { register, handleSubmit, formState: { errors, isSubmitted }, watch, trigger } = useForm();
+  const accounttype=watch('accounttype')
   const password = watch("password");
   const Navigate=useNavigate();
 
@@ -24,7 +24,7 @@ function Signup1() {
 
   const checkEmailExists = async (email) => {
     try {
-      const response = await Axios.get('http://localhost:3001/emailexists', { params: { Email: email } });
+      const response = await Axios.get('http://localhost:3001/auth/emailexists', { params: { Email: email } });
       return response.data.exists;
     } catch (error) {
       console.error(error);
@@ -33,6 +33,7 @@ function Signup1() {
   };
 
   const onSubmit = async (data) => {
+    console.log(data)
     const emailExists = await checkEmailExists(data.Email);
     if (emailExists) {
         setError('Email', { type: 'manual', message: 'Email already taken' });
@@ -57,7 +58,7 @@ function Signup1() {
         profilePicture: imageUrl,
     };
 
-    Axios.post("http://localhost:3001/users", formData)
+    Axios.post("http://localhost:3001/register/register", formData)
         .then((response) => {
             console.log(response.data);
             Navigate("/Login");
@@ -70,7 +71,6 @@ function Signup1() {
 };
 
 
-  
   const handleNextClick = async () => {
     const result = await trigger("accounttype");
     if (result) {
@@ -106,7 +106,7 @@ function Signup1() {
                   value="tutor"
                   name="accounttype"
                   className="hidden peer"
-                  onChange={()=>setistutor(true)}
+                  
                 />
                 <label
                   htmlFor="tutor"
@@ -126,7 +126,7 @@ function Signup1() {
                   name="accounttype"
                   value="student"
                   className="hidden peer"
-                  onChange={()=>setistutor(false)}
+                 
                 />
                 <label
                   htmlFor="student"
@@ -275,20 +275,20 @@ function Signup1() {
                     />
                 {isSubmitted && errors.profilePicture && <div className='text-red-500'>{errors.profilePicture.message}</div>}
                   </div>
-                 
-                  <div className={`${istutor ? "block" : "hidden"}`}>
+                 {accounttype ==='tutor'  && (
+                  <div>
                   <label className="block text-sm font-medium leading-6 text-gray-900">How many years of teaching experience do you have?</label>
                     <input 
                     id="yearsofexperience"
                     name="yearsofexperience"
                     type="number"
-                    
                     {...register("yearsofexperience", {
                       required:false,
                     })}
                     className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
+                      )}
                   <label className="block text-sm font-medium leading-6 text-gray-900">Provide a Bio (optional)</label>
                   <div className="mt-2">
                     <textarea 

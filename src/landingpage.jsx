@@ -7,7 +7,6 @@ export default function landingpage() {
         "Tutoring dates back to ancient Greece, where wealthy families hired tutors for education.",
         "Tutoring provides personalized learning, catering to individual needs and styles.",
         "Tutoring boosts confidence and fosters a positive attitude towards learning.",
-        "Tutors cover a wide range of subjects, including music, art, and sports.",
         "Online tutoring has surged, offering accessibility from anywhere.",
         "Adults seek tutoring for professional development and exam preparation.",
         "Peer tutoring benefits both the tutor and the student.",
@@ -25,7 +24,7 @@ export default function landingpage() {
       
 
   return (
-    <div className="font-sans bg-gray-100">
+    <div className="font-sans bg-gray-50">
       <div className="grid md:grid-cols-2 items-center md:gap-8 gap-6">
         <div className="max-md:order-1 max-md:text-center z-50 relative">
           <h2 className="text-gray-800 lg:text-6xl md:text-5xl text-3xl font-extrabold mb-4 md:!leading-[56px] p-5"><span className="text-yellow-400">Find </span>My <span className="">Tutor </span></h2>
@@ -34,20 +33,11 @@ export default function landingpage() {
           <Link to="/Card"
             className=" ml-5 mt-6 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-6 py-2.5">Get Started</Link>
 
-          <div className="mt-12">
-            <div className="grid sm:grid-cols-3 gap-4 items-center">
-              <div className="flex flex-col items-center text-center">
-                <h5 className="text-gray-800 font-bold text-xl mb-2">10+</h5>
-                <p className="text-gray-600">Years Experience</p>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <h5 className="text-gray-800 font-bold text-xl mb-2">890</h5>
-                <p className="text-gray-600">Cases Solved</p>
-              </div>
-              <div className="flex flex-col items-center text-center">
-                <h5 className="text-gray-800 font-bold text-xl mb-2">250</h5>
-                <p className="text-gray-600">Business Partners</p>
-              </div>
+          <div className="mt-12 ml-4 mr-4 border-2 border-gray-300 rounded-3xl p-3 ">
+            <div className="grid sm:grid-cols-1 gap-4 items-center">
+                  
+                <p className="text-gray-600">Fun Fact: {randomFact}</p>
+              
             </div>
           </div>
         </div>

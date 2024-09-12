@@ -15,7 +15,7 @@ function Login({setauth,setuser}) {
     Axios.defaults.withCredentials=true;
 
     const onsubmit = (data) => {
-        Axios.post("http://localhost:3001/login", data).then((response) => {
+        Axios.post("http://localhost:3001/auth/login", data).then((response) => {
             if (response.data.auth) {
                 localStorage.setItem("token", response.data.token);
                 setauth(true);
@@ -33,7 +33,7 @@ function Login({setauth,setuser}) {
     };
 
     useEffect(() => {
-        Axios.get("http://localhost:3001/isUserAuth", {
+        Axios.get("http://localhost:3001/auth/isUserAuth", {
             headers: {
                 "x-access-token": localStorage.getItem("token")
             }

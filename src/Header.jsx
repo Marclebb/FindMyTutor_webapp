@@ -26,7 +26,7 @@ return (
     <div className=" pb-10 sticky z-50 top-0">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
         
-        <nav className="flex items-center justify-between p-2 lg:px-8 bg-white" aria-label="Global">
+        <nav className="flex items-center justify-between bg-white" aria-label="Global">
        
           <div className="flex lg:flex-1">
             <Link to="/" className="m-1.5 p-1.5">
@@ -51,14 +51,14 @@ return (
             </button>
           </div>
         
-          <div className="hidden lg:flex lg:gap-x-12">
+          <div className="hidden lg:flex lg:gap-x-16">
            
             <Link to="/Card" className={`p-2 ${location.pathname === '/Card' ? 'border-b-4 border-yellow-400' : ''} hover:border-b-4 border-yellow-400`}>All tutors</Link>
             {role === 'student' &&  (
             <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create Request</Link>
             )}
              {role === 'tutor' &&  (
-            <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create post</Link>
+            <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create Post</Link>
             )}
             <Link to="/MyMatches" className={`p-2 ${location.pathname === '/MyMatches' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>My Matches</Link>
             <Link to="/Profile" className={`p-2 ${location.pathname === '/Profile' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Profile</Link>

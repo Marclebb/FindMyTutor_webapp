@@ -19,6 +19,10 @@ function CreateRequest() {
     if (watchLearningWay !== 'onsite') {
       setValue('location', null); 
     }
+    else if(watchLearningWay !== 'online'){
+      setValue('platform',null)
+    }
+
   }, [watchLearningWay, setValue]);
 
   useEffect(() => {
@@ -34,14 +38,14 @@ function CreateRequest() {
   }, []);
   
   return (
-    <div className="font-[sans-serif] bg-gray-50 min-h-screen lg:mt-2 pt-20 relative z-10">
+    <div className="font-[sans-serif] bg-gray-50 min-h-screen lg:mt-2  pt-20 relative z-10">
       {/* Intro Section */}
       <div className={`flex flex-col items-center justify-center text-center ${next ? 'hidden' : 'content'}`}>
         {role === 'student' && ( 
           <div>
         <h1 className="pb-6 text-xl sm:text-2xl md:text-2xl lg:text-3xl">Welcome to the CreateRequest page</h1>
       <img src={studicon} alt="icon" className="mx-auto h-40 w-auto pt-4 pb-5 rounded-lg" />
-        <p className="pt-6 text-sm sm:text-sm md:text-base lg:text-base">In this page you can create a personalized request for your preferred tutor</p>
+        <p className="pt-6 text-sm sm:text-sm md:text-base lg:text-base ml-5">In this page you can create a personalized request for your preferred tutor</p>
         <p className="text-sm sm:text-sm md:text-base lg:text-base">Choose from various elements: like the preferred course, a preferred schedule, </p>
         <p className="text-sm sm:text-sm md:text-base lg:text-base">a price you are willing to pay, and more...</p>
         </div>
@@ -65,7 +69,8 @@ function CreateRequest() {
 
       {/* Form Section */}
       <form onSubmit={handleSubmit(onSubmit)} className={`${next ? 'content' : 'hidden'} relative z-0`}>
-        <h1 className="flex items-center justify-center text-3xl pb-5">Create Request</h1>
+      {role === 'tutor' &&  (<h1 className="flex items-center justify-center text-3xl pb-5">Create Post</h1>)}
+      {role === 'student' &&  (<h1 className="flex items-center justify-center text-3xl pb-5">Create Request</h1>)}
         <div className="flex flex-col lg:flex-row lg:space-x-4 mt-4">
           {/* Left Column */}
           <div className="w-full lg:w-1/2 p-5 pb-4 lg:border-r-2 lg:border-solid lg:border-gray-500 lg:mr-1">
@@ -152,9 +157,12 @@ function CreateRequest() {
           <div className="w-full lg:w-1/2 p-5 pb-4">
             {/* Learning Way - Radio Buttons */}
             <div className="relative flex flex-col items-start pb-7">
-              <label className="text-[13px] bg-gray-50 text-black px-2 mb-2 relative z-10">
+            {role ==='student' &&  (<label className="text-[13px] bg-gray-50 text-black px-2 mb-2 relative z-10">
                 How do you want to learn?
-              </label>
+              </label> )}
+              {role ==='tutor' &&  (<label className="text-[13px] bg-gray-50 text-black px-2 mb-2 relative z-10">
+                How do you want to teach your students?
+              </label> )}
               <div className="flex flex-wrap gap-3 w-full relative z-0">
                 {['online', 'onsite', 'hybrid'].map((option) => (
                   <label
@@ -191,13 +199,26 @@ function CreateRequest() {
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
-                <option value="" disabled> Select a learning method </option>
-                <option value="Synchronus online teaching">Synchronus online teaching</option>
-                <option value="Synchronus onsite(in person) teaching">Synchronus onsite(in person) teaching  </option>
-                <option value="Asynchronus teaching">Asynchronus teaching</option>
-                <option value="Collaborative learning">Collaborative learning</option>
-                <option value="Blended learning">Blended learning</option>
-                <option value="Flipped classroom">Flipped classroom</option>
+                 <option value="" disabled> Select a learning method </option>
+                {watchLearningWay === 'online' && (
+                  <>
+                <option value="b">Synchronus online teaching</option>
+                <option value="a">Asynchronus online teaching </option>
+                <option value="c">Self paced learning</option>
+                <option value="d">Collaborative learning (online)</option>
+                <option value="i">One to one online sessions</option>
+                </>)}
+                {watchLearningWay === 'onsite' && (
+                  <>
+                <option value="e">Synchronus onsite(in-person) teaching</option>
+                <option value="f">One to one sessions</option>
+                <option value="g">Collaborative teaching</option>
+                </>)}
+                {watchLearningWay === 'hybrid' && (
+                  <>
+                <option value="i">Flipped classroom</option>
+                <option value="j">Blended learning</option>
+                </>)}
               </select>
               {errors.learningmethod && (
                 <p className="text-red-500 text-xs mt-1 relative z-10">Learning method is required</p>
@@ -205,6 +226,7 @@ function CreateRequest() {
             </div>
 
             {/* Platform */}
+            {(watchLearningWay != 'onsite') && (
             <div className="relative flex items-center pb-7">
               <label className="text-[13px] bg-gray-50 text-black absolute px-2 top-[-10px] left-[18px] z-10">
                 Platform
@@ -217,15 +239,16 @@ function CreateRequest() {
                 <option value="" disabled>
                   Select a platform
                 </option>
-                <option value="Zoom with Google Classroom">Zoom with Google Classroom</option>
-                <option value="Google meet with Google Classroom">Google meet with Google Classroom</option>
+                <option value="Zoom with Google Classroom">Zoom with Google Classroom for file sharing</option>
+                <option value="Google meet with Google Classroom">Google meet with Google Classroom for file sharing</option>
                 <option value="Microsoft teams">Microsoft teams</option>
+                <option value="moodle">Moodle</option>
               </select>
               {errors.platform && (
                 <p className="text-red-500 text-xs mt-1 relative z-10">Platform is required</p>
               )}
             </div>
-
+            )}
             {/* Location - Conditionally Rendered */}
             {(watchLearningWay === 'onsite'  || watchLearningWay==='hybrid') && (
               <div className="relative flex flex-col">
@@ -270,7 +293,7 @@ function CreateRequest() {
         maxLength={350}
         rows={6}
         cols={50}
-        className="ml-5 bg-transparent lg:w-4/12 w-11/12 h-auto resize-none border border-gray-300 p-2 rounded-md disabled:opacity-50 relative z-0"
+        className="ml-5 bg-transparent lg:w-4/12 w-11/12 h-auto resize-none border-2 border-gray-300 p-2 focus:outline-none focus:border-blue-500 rounded-md disabled:opacity-50 relative z-0"
         {...register("description", { required: false })}  
       />
     </div>

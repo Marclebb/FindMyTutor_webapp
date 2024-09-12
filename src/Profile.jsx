@@ -93,21 +93,21 @@ function Profile({ setauth }) {
             <div className="grid grid-cols-3 ">
              <button 
                 onClick={handleLogout} 
-                className="ml-4 mt-7 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-4 py-1.5"
+                className="ml-2 mt-5 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-4 py-1.5"
             >
                 Signout
             </button>
           
             <button onClick={EditProfileClick}
                 state={userinfo}
-                className="ml-4 mt-7 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-4 py-1.5"
+                className="ml-2 mt-5 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-4 py-1.5"
              >
                Edit Profile
               </button>  
             
             <button
                 onClick={deleteclick}
-                className="ml-4 mt-7 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-4 py-1.5"
+                className="ml-2 mt-5 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-4 py-1.5"
             >
                 Delete Account
             </button>

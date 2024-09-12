@@ -20,7 +20,7 @@ const onsubmit = async (data) => {
     try {
       const token = localStorage.getItem("token");
       // Verify password
-      const verificationResponse = await axios.post("http://localhost:3001/verify-password", { password: data.password }, {
+      const verificationResponse = await axios.post("http://localhost:3001/auth/verify-password", { password: data.password }, {
         headers: {
           "x-access-token": token 
         },
@@ -28,7 +28,7 @@ const onsubmit = async (data) => {
 
       if (verificationResponse.data.valid) {
         // Proceed with account deletion
-        await axios.delete("http://localhost:3001/deleteprofile", {
+        await axios.delete("http://localhost:3001/users/deleteprofile", {
           headers: {
             "x-access-token": token, 
           },

@@ -36,7 +36,7 @@ function EditProfile(){
       };
 
       console.log(formData)
-      Axios.patch('http://localhost:3001/EditProfile', formData,{
+      Axios.patch('http://localhost:3001/users/EditProfile', formData,{
         headers: {
           'x-access-token': localStorage.getItem('token'),
       }
