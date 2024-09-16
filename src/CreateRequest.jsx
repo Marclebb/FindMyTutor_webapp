@@ -2,25 +2,66 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import tutoricon from './assets/teacher.png';
 import studicon from './assets/student.png';
-import {jwtDecode} from 'jwt-decode'; // Use the correct import for jwt-decode
+import axios from 'axios';
+import {jwtDecode} from 'jwt-decode'; 
+import { useNavigate } from 'react-router-dom';
 
 function CreateRequest() {
   const { register, handleSubmit, setValue, watch, formState: { errors } } = useForm();
   const [next, setNext] = useState(false);
   const [role, setRole] = useState(null);
+  const navigate = useNavigate();
+
+  const [option,setoptions]=useState({
+    selectCourse:[],
+    selectdate:[],
+    selecttime: [],
+    selectlocation:[],
+    selectplatform:[],
+    selectprice:[]
+  })
 
   const onSubmit = (data) => {
-    console.log(data); 
+    data.post_type=role
+    console.log(data);
+    axios.post("http://localhost:3001/createpost/submitpost",data,{
+      headers:{
+        'x-access-token':localStorage.getItem('token')
+      }
+    }).then(response=>{
+      console.log(response.data);
+      console.log("siccessfully added")
+      navigate("/Card")
+    }).catch(error=>{
+      console.log(error)
+    })
+    
   };
 
-  const watchLearningWay = watch('learningway');
+  const watchLearningWay = watch('learning_way_id');
 
   useEffect(() => {
-    if (watchLearningWay !== 'onsite') {
-      setValue('location', null); 
+    const fetchData = async () => {
+      try {
+        const response = await axios.get('http://localhost:3001/createpost/postinfo');
+        console.log("api response: ",response.data)
+        setoptions(response.data);
+      
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        //setError('Failed to fetch data. Please try again later.');
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  useEffect(() => {
+    if (watchLearningWay !== '2') {
+      setValue('location_id', null); 
     }
-    else if(watchLearningWay !== 'online'){
-      setValue('platform',null)
+    else if(watchLearningWay !== '1'){
+      setValue('platform_id',null)
     }
 
   }, [watchLearningWay, setValue]);
@@ -80,18 +121,18 @@ function CreateRequest() {
                 Course
               </label>
               <select
-                {...register('course', { required: true })}
+                {...register('course_id', { required: true })}
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
                 <option value="" disabled>
                   Select a course
                 </option>
-                <option value="Maths">Maths</option>
-                <option value="Physics">Physics</option>
-                <option value="Chemistry">Chemistry</option>
+                {option.selectCourse && option. selectCourse.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+               ))}
               </select>
-              {errors.course && <p className="text-red-500 text-xs mt-1 relative z-10">Course is required</p>}
+              {errors.course_id && <p className="text-red-500 text-xs mt-1 relative z-10">Course is required</p>}
             </div>
 
             {/* Date Selection */}
@@ -100,17 +141,15 @@ function CreateRequest() {
                 Date
               </label>
               <select
-                {...register('date', { required: true })}
+                {...register('date_id', { required: true })}
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
-                <option value="" disabled>Select a date</option>
-                <option value="Monday">Monday</option>
-                <option value="Tuesday">Tuesday</option>
-                <option value="Wednesday">Wednesday</option>
-                <option value="Thursday">Thursday</option>
+                {option.selectdate && option.selectdate.map(option => (
+               <option key={option.value} value={option.value}>{option.label}</option>
+                 ))}
               </select>
-              {errors.date && <p className="text-red-500 text-xs mt-1 relative z-10">Date is required</p>}
+              {errors.date_id && <p className="text-red-500 text-xs mt-1 relative z-10">Date is required</p>}
             </div>
             {/* Time Selection */}
             <div className="relative flex items-center pb-7">
@@ -118,15 +157,16 @@ function CreateRequest() {
                 Time
               </label>
               <select
-                {...register('time', { required: true })}
+                {...register('time_id', { required: true })}
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
                 <option value="" disabled> Select a time</option>
-                <option value="9am-10am">9am-10am</option>
-                <option value="11am-12pm">11am-12pm</option>
+                {option.selecttime && option.selecttime.map(option => (
+                 <option key={option.value} value={option.value}>{option.label}</option>
+              ))}
               </select>
-              {errors.time && <p className="text-red-500 text-xs mt-1 relative z-10">Time is required</p>}
+              {errors.time_id && <p className="text-red-500 text-xs mt-1 relative z-10">Time is required</p>}
             </div>
 
             {/* Price Selection */}
@@ -135,21 +175,16 @@ function CreateRequest() {
                 Price (Per hour)
               </label>
               <select
-                {...register('price', { required: 'Please enter a price' })}
+                {...register('price_id', { required: 'Please enter a price' })}
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
                 <option value="" disabled>Select a price </option>
-                <option value="5$">5$</option>
-                <option value="10$">10$</option>
-                <option value="15$">15$</option>
-                <option value="20$">20$</option>
-                <option value="25$">25$</option>
-                <option value="30$">30$</option>
-                <option value="40$">40$</option>
-                <option value="50$">50$</option>
+                {option.selectprice && option.selectprice.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
               </select>
-              {errors.price && (<div className="text-red-500 text-xs mt-1 z-10">{errors.price.message}</div>)}
+              {errors.price_id && (<div className="text-red-500 text-xs mt-1 z-10">{errors.price_id.message}</div>)}
             </div>
             <p className="text-xs text-gray-700">*For fair pricing you can only choose from a set of selected prices</p>
           </div>
@@ -164,27 +199,27 @@ function CreateRequest() {
                 How do you want to teach your students?
               </label> )}
               <div className="flex flex-wrap gap-3 w-full relative z-0">
-                {['online', 'onsite', 'hybrid'].map((option) => (
+                {Object.entries({'1':'online', '2':'onsite', '3':'hybrid'}).map(([key,value]) => (
                   <label
-                    key={option}
+                    key={key}
                     className={`flex-1 flex items-center justify-center p-3 border rounded-lg cursor-pointer relative z-0 ${
-                      watchLearningWay === option
+                      watchLearningWay === key
                         ? 'border-blue-500 text-blue-500'
                         : 'border-gray-500 text-black'
                     }`}
                   >
                     <input
                       type="radio"
-                      {...register('learningway', { required: true })}
-                      value={option}
+                      {...register('learning_way_id', { required: true })}
+                      value={key}
                       className="hidden"
                      
                     />
-                    <span className="text-sm font-semibold capitalize">{option}</span>
+                    <span className="text-sm font-semibold capitalize">{value}</span>
                   </label>
                 ))}
               </div>
-              {errors.learningway && (
+              {errors.learning_way_id && (
                 <p className="text-red-500 text-xs relative z-10">Please select a learning way</p>
               )}
             </div>
@@ -195,80 +230,79 @@ function CreateRequest() {
                 Learning method
               </label>
               <select
-                {...register('learningmethod', { required: true })}
+                {...register('learning_method_id', { required: true })}
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
                  <option value="" disabled> Select a learning method </option>
-                {watchLearningWay === 'online' && (
+                {watchLearningWay === '1' && (
                   <>
-                <option value="b">Synchronus online teaching</option>
-                <option value="a">Asynchronus online teaching </option>
-                <option value="c">Self paced learning</option>
-                <option value="d">Collaborative learning (online)</option>
-                <option value="i">One to one online sessions</option>
+                <option key="1" value="1">Synchronus online teaching</option>
+                <option key="2" value="2">Asynchronus online teaching </option>
+                <option key="3" value="3">Self paced learning</option>
+                <option key="4" value="4">Collaborative learning (online)</option>
+                <option key="5" value="5">One to one online sessions</option>
                 </>)}
-                {watchLearningWay === 'onsite' && (
+                {watchLearningWay === '2' && ( //learning way is onsite ??
                   <>
-                <option value="e">Synchronus onsite(in-person) teaching</option>
-                <option value="f">One to one sessions</option>
-                <option value="g">Collaborative teaching</option>
+                <option key="6" value="6">Synchronus onsite(in-person) teaching</option>
+                <option key="7" value="7">One to one sessions</option>
+                <option key="8" value="8">Collaborative teaching</option>
                 </>)}
-                {watchLearningWay === 'hybrid' && (
+                {watchLearningWay === '3' && (
                   <>
-                <option value="i">Flipped classroom</option>
-                <option value="j">Blended learning</option>
+                <option key="9"  value="9">Flipped classroom</option>
+                <option key="10" value="10">Blended learning</option>
                 </>)}
               </select>
-              {errors.learningmethod && (
+              {errors.learning_method_id && (
                 <p className="text-red-500 text-xs mt-1 relative z-10">Learning method is required</p>
               )}
             </div>
 
             {/* Platform */}
-            {(watchLearningWay != 'onsite') && (
+            {(watchLearningWay != '2') && (    //learninway is not onsite
             <div className="relative flex items-center pb-7">
               <label className="text-[13px] bg-gray-50 text-black absolute px-2 top-[-10px] left-[18px] z-10">
                 Platform
               </label>
               <select
-                {...register('platform', { required: true })}
+                {...register('platform_id', { required: true })}
                 className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                 defaultValue=""
               >
                 <option value="" disabled>
                   Select a platform
                 </option>
-                <option value="Zoom with Google Classroom">Zoom with Google Classroom for file sharing</option>
-                <option value="Google meet with Google Classroom">Google meet with Google Classroom for file sharing</option>
-                <option value="Microsoft teams">Microsoft teams</option>
-                <option value="moodle">Moodle</option>
+                {option.selectplatform && option.selectplatform.map(option => (
+                <option key={option.value} value={option.value}>{option.label}</option>
+                 ))}
               </select>
-              {errors.platform && (
+              {errors.platform_id && (
                 <p className="text-red-500 text-xs mt-1 relative z-10">Platform is required</p>
               )}
             </div>
             )}
             {/* Location - Conditionally Rendered */}
-            {(watchLearningWay === 'onsite'  || watchLearningWay==='hybrid') && (
+            {(watchLearningWay === '2'  || watchLearningWay==='3') && (
               <div className="relative flex flex-col">
                 <div className="relative mb-1">
                   <label className="text-[13px] bg-gray-50 text-black absolute px-2 top-[-10px] left-[18px] z-10">
                     Location
                   </label>
                   <select
-                    {...register('location', { required: true })}
+                    {...register('location_id', { required: true })}
                     className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
                     defaultValue=""
                   >
                     <option value="" disabled>
                       Select a location
                     </option>
-                    <option value="Beirut">Beirut</option>
-                    <option value="Dbaye">Dbaye</option>
-                    <option value="Saida">Saida</option>
+                    {option.selectlocation && option.selectlocation.map(option => (
+          <option key={option.value} value={option.value}>{option.label}</option>
+        ))}
                   </select>
-                  {errors.location && (
+                  {errors.location_id && (
                     <p className="text-red-500 text-xs mt-1 relative z-10">Enter your location</p>
                   )}
                 </div>
@@ -288,13 +322,14 @@ function CreateRequest() {
       Enter a description
     </label>
       <textarea
+        defaultValue={null}
         id="description"
         name="description"  
         maxLength={350}
         rows={6}
         cols={50}
         className="ml-5 bg-transparent lg:w-4/12 w-11/12 h-auto resize-none border-2 border-gray-300 p-2 focus:outline-none focus:border-blue-500 rounded-md disabled:opacity-50 relative z-0"
-        {...register("description", { required: false })}  
+        {...register("post_description", { required: false })}  
       />
     </div>
   </div>

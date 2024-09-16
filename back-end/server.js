@@ -7,6 +7,8 @@ const corsOptions = require('./config/corsOptions');
 const userRoutes = require('./routes/userRoutes');
 const authRoutes = require('./routes/authRoutes');
 const registerRoute = require('./routes/registerRoute')
+const createpostRoutes=require('./routes/createpostRoutes')
+const mainpageRoutes=require('./routes/mainpageRoutes')
 
 const app = express();
 
@@ -20,7 +22,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Use routes
 app.use('/users', userRoutes);
 app.use('/auth', authRoutes);
-app.use('/register',registerRoute)
+app.use('/register',registerRoute);
+app.use('/createpost',createpostRoutes)
+app.use('/mainpageroutes',mainpageRoutes)
 
 const PORT = 3001;
 app.listen(PORT, () => {

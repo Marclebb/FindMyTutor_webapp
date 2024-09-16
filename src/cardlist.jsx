@@ -1,4 +1,4 @@
-import user from './assets/user.png'; 
+/*import user from './assets/user.png'; 
 
 const Cardlist = (props) => {
   const cards = props.cards;
@@ -40,5 +40,5 @@ const Cardlist = (props) => {
   );
 }
 
-export default Cardlist;
+export default Cardlist;*/
 
