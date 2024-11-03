@@ -34,10 +34,8 @@ export default function landingpage() {
             className=" ml-5 mt-6 bg-sky-400 hover:bg-indigo-500 hover:border-indigo-500 hover:text-white border-2 border-sky-400 transition-all text-white font-semibold text-sm tracking-wide rounded-md px-6 py-2.5">Get Started</Link>
 
           <div className="mt-12 ml-4 mr-4 border-2 border-gray-300 rounded-3xl p-3 ">
-            <div className="grid sm:grid-cols-1 gap-4 items-center">
-                  
-                <p className="text-gray-600">Fun Fact: {randomFact}</p>
-              
+            <div className="grid sm:grid-cols-1 gap-4 items-center">     
+                <p className="text-gray-600">Fun Fact: {randomFact}</p>    
             </div>
           </div>
         </div>
@@ -67,7 +65,7 @@ export default function landingpage() {
         </div>
         <div className="bg-white p-6 shadow rounded-md mb-5">
           <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" className="w-11 h-11 mb-4 inline-block bg-blue-100 p-3 rounded-md" viewBox="0 0 24 24">
-            <g fillRule="evenodd" clip-rule="evenodd">
+            <g fillRule="evenodd" clipRule="evenodd">
               <path d="M17.03 8.97a.75.75 0 0 1 0 1.06l-4.2 4.2a.75.75 0 0 1-1.154-.114l-1.093-1.639L8.03 15.03a.75.75 0 0 1-1.06-1.06l3.2-3.2a.75.75 0 0 1 1.154.114l1.093 1.639L15.97 8.97a.75.75 0 0 1 1.06 0z" data-original="#000000" />
               <path d="M13.75 9.5a.75.75 0 0 1 .75-.75h2a.75.75 0 0 1 .75.75v2a.75.75 0 0 1-1.5 0v-1.25H14.5a.75.75 0 0 1-.75-.75z" data-original="#000000" />
               <path d="M3.095 3.095C4.429 1.76 6.426 1.25 9 1.25h6c2.574 0 4.57.51 5.905 1.845C22.24 4.429 22.75 6.426 22.75 9v6c0 2.574-.51 4.57-1.845 5.905C19.571 22.24 17.574 22.75 15 22.75H9c-2.574 0-4.57-.51-5.905-1.845C1.76 19.571 1.25 17.574 1.25 15V9c0-2.574.51-4.57 1.845-5.905zm1.06 1.06C3.24 5.071 2.75 6.574 2.75 9v6c0 2.426.49 3.93 1.405 4.845.916.915 2.419 1.405 4.845 1.405h6c2.426 0 3.93-.49 4.845-1.405.915-.916 1.405-2.419 1.405-4.845V9c0-2.426-.49-3.93-1.405-4.845C18.929 3.24 17.426 2.75 15 2.75H9c-2.426 0-3.93.49-4.845 1.405z" data-original="#000000" />

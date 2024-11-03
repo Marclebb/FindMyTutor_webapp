@@ -14,7 +14,22 @@ function EditProfile(){
     const userinfo=location.state
 
     const {register,handleSubmit,formState:{errors,isSubmitted}}=useForm();
- 
+
+    const checkPhoneExists = async (phoneNumber) => {
+      try {
+          const response = await Axios.get('http://localhost:3001/auth/phoneexists', { 
+              params: { 
+                  phoneNumber: phoneNumber,
+                  currentUserId: userinfo.id
+              } 
+          });
+          return response.data.exists;
+      } catch (error) {
+          console.error(error);
+          return false;
+      }
+  };
+  
     const onsubmit = async (data) => {
       setisSubmiting(true)
       let imageUrl;
@@ -43,14 +58,14 @@ function EditProfile(){
       } )
     .then(response => {
         //alert(response.data);
-        navigate("/Profile")
+        navigate("/MyProfile")
     })
     .catch(error => {
         console.error("There was an error updating the profile!", error);
     });
     }  
 return(
-    <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-20 lg:px-8 bg-gray-50">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-20 lg:px-8 bg-gray-50 text-black">
          <h1 className="flex  items-center justify-center py-2 mb-7 text-3xl">Edit Profile</h1>
     <form className="space-y-6 px-4 max-w-sm mx-auto font-[sans-serif]" onSubmit={handleSubmit(onsubmit)}>
       
@@ -66,6 +81,10 @@ return(
             pattern: {
             value: /^\+961[0-9]{8}$/,
             message: "Phone number must start with +961 followed by exactly 8 digits"
+          },
+          validate: async (value) => {
+            const phoneexists = await checkPhoneExists(value);
+            return !phoneexists || "phone number already taken";
           }
          })} />
       </div>
@@ -117,9 +136,6 @@ return(
         className=" bg-transparent w-full h-auto resize-none border border-gray-300 p-2 rounded-md disabled:opacity-50"
         defaultValue={userinfo.Bio}
         {...register("Bio",{required:false})}
-      
-         
-       // className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
         />
                     </div>
 

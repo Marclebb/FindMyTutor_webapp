@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
+require('dotenv').config();
 
-const secret = "my_jwt_secret";
+const secret = process.env.MY_JWT_SECRET;
+
 
 const verifyJWT = (req, res, next) => {
     const token = req.headers["x-access-token"];
@@ -13,10 +15,10 @@ const verifyJWT = (req, res, next) => {
                 res.send({ auth: false, message: "Failed to authenticate token." });
             } else {
                 req.userId = decoded.id;
-                next();
+                req.role = decoded.accounttype;
+                next()
             }
         });
     }
-};
-
+}
 module.exports = verifyJWT;

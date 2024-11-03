@@ -10,7 +10,7 @@ function Deleteaccount() {
     const navigate = useNavigate();
 
     const goback = () => {
-        navigate("/Profile");
+        navigate("/MyProfile");
     };
 
 const { register, handleSubmit, formState: {errors}} = useForm();
@@ -46,7 +46,7 @@ const onsubmit = async (data) => {
 
     return (
       
-        <div className="flex flex-col items-center justify-center min-h-screen">
+        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 text-black">
             <ToastContainer/>
             <img src={warning} className="mx-auto h-32 w-auto pt-6"></img>
             <h1 className="text-4xl mb-8 mt-8">Delete your account?</h1>
@@ -77,7 +77,7 @@ const onsubmit = async (data) => {
                     type="password"
                     id="password"
                     name="password"
-                  className=" mt-4 pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></input>
+                  className="bg-transparent mt-4 pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"></input>
                   { errors.password && <div className='text-red-700'>{errors.password.message}</div>}
                     <div className="grid grid-cols-2">
                     <button 

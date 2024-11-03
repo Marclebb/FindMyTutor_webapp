@@ -4,10 +4,14 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../config/database');
 const verifyJWT = require('../middleware/verifyJWT');
+require('dotenv').config();
 
-const secret = "my_jwt_secret";
+const secret = process.env.MY_JWT_SECRET;
+
+//const secret = "my_jwt_secret";
 
 router.post("/login", (req, res) => {
+    
     const { Email, password } = req.body;
 
     db.query("SELECT * FROM users WHERE Email = ?", [Email], (err, result) => {
@@ -62,6 +66,32 @@ router.get("/emailexists", (req, res) => {
     })
 });
 
+router.get("/phoneexists", (req, res) => {
+    const { phoneNumber, currentUserId } = req.query;
+    
+    // If currentUserId is provided (editing profile), exclude the current user
+    // If currentUserId is not provided (registration), check all users
+    const query = currentUserId 
+        ? "SELECT * FROM users WHERE phoneNumber = ? AND id != ?"
+        : "SELECT * FROM users WHERE phoneNumber = ?";
+    
+    const queryParams = currentUserId 
+        ? [phoneNumber, currentUserId]
+        : [phoneNumber];
+
+    db.query(query, queryParams, (err, result) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).send("error fetching phone number");
+        }
+        if (result.length > 0) {
+            res.send({ exists: true });
+        } else {
+            res.send({ exists: false });
+        }
+    });
+});
+
 router.post("/verify-password", verifyJWT, (req, res) => {
     const { password } = req.body;
     const userId = req.userId;
@@ -85,5 +115,6 @@ router.post("/verify-password", verifyJWT, (req, res) => {
         }
     });
 });
+
 
 module.exports = router;

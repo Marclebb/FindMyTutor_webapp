@@ -6,46 +6,76 @@ import Axios from 'axios';
 import Logo from './assets/scholarship.png';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom/';
-import { Warning } from 'postcss';
+import { requestNotificationPermission } from './notification';
 
-function Login({setauth,setuser}) {
-    const { register, handleSubmit, formState: {errors,isSubmitted}} = useForm();
-    const [loginstatus,setloginstatus]=useState("")
-    const history=useNavigate()
-    Axios.defaults.withCredentials=true;
 
-    const onsubmit = (data) => {
-        Axios.post("http://localhost:3001/auth/login", data).then((response) => {
+function Login({ setauth, setUser }) {
+    const { register, handleSubmit, formState: { errors, isSubmitted } } = useForm();
+    const [loginstatus, setLoginStatus] = useState("");
+    const navigate = useNavigate();
+
+    const onsubmit = async (data) => {
+        try {
+            const response = await Axios.post("http://localhost:3001/auth/login", data);
+            
             if (response.data.auth) {
-                localStorage.setItem("token", response.data.token);
-                setauth(true);
-                setuser(response.data.user)
-                //setloginstatus("Welcome " + response.data.firstname + "!");
-                history.push("/card")
+                try {
+                    await requestNotificationPermission();
+                    localStorage.setItem("token", response.data.token);
+                    
+                    // Call setauth with both the auth state and user data
+                    setauth(true, response.data.user);
+                    
+                    // Navigate after auth is set
+                    navigate("/Card");
+                } catch (error) {
+                    console.error("Failed to request notification permission:", error);
+                    // Still proceed with login even if notification permission fails
+                    localStorage.setItem("token", response.data.token);
+                    setauth(true, response.data.user);
+                    navigate("/card");
+                }
             } else {
-                //setloginstatus(response.data.message);
-                    toast.error(response.data.message,{position:"top-center",autoClose:1000,type:'error'});
-                  
+                toast.error(response.data.message, {
+                    position: "top-center",
+                    autoClose: 1000,
+                    type: 'error'
+                });
             }
-        }).catch((error) => {
-            console.log(error);
-        });
+        } catch (error) {
+            console.error("Login error:", error);
+            toast.error("An error occurred during login. Please try again.", {
+                position: "top-center",
+                autoClose: 2000,
+                type: 'error'
+            });
+        }
     };
 
+    // Initial auth check
     useEffect(() => {
-        Axios.get("http://localhost:3001/auth/isUserAuth", {
-            headers: {
-                "x-access-token": localStorage.getItem("token")
-            }
-        }).then((response) => {
-            if (response.data.auth) {
-                setloginstatus("");
-            }
-        });
-    }, []);
+        const token = localStorage.getItem("token");
+        if (token) {
+            Axios.get("http://localhost:3001/auth/isUserAuth", {
+                headers: {
+                    "x-access-token": token
+                }
+            }).then((response) => {
+                if (response.data.auth) {
+                    setLoginStatus("");
+                    // If user is already authenticated, redirect to card page
+                    navigate("/card");
+                }
+            }).catch((error) => {
+                console.error("Auth check error:", error);
+                // Clear invalid token
+                localStorage.removeItem("token");
+            });
+        }
+    }, [navigate]); 
 
     return (
-        <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-24 lg:px-8 ">
+        <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-24 lg:px-8 bg-gray-50">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
                 <Link to="/">
                     <img className="mx-auto h-13 w-auto pt-6" src={Logo} alt="FMT logo" />
@@ -71,7 +101,7 @@ function Login({setauth,setuser}) {
                                 pattern: { 
                                     value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i, 
                                     message: "Invalid email Format" } })}
-                                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                         </div>
                         {isSubmitted && errors.Email && <div className='text-red-500'>{errors.Email.message}</div>}
@@ -82,11 +112,7 @@ function Login({setauth,setuser}) {
                             <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                 Password
                             </label>
-                            <div className="text-sm">
-                                <a href="#" className="font-semibold text-sky-400 hover:text-indigo-500">
-                                    Forgot password?
-                                </a>
-                            </div>
+                            
                         </div>
                         <div className="mt-2">
                             <input
@@ -96,7 +122,7 @@ function Login({setauth,setuser}) {
                                 autoComplete="current-password"
                                
                                 {...register("password",{required:"Enter your password"})}
-                                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                                className="pl-2 block w-full bg-transparent rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                             />
                         </div>
                         {isSubmitted && errors.password && <div className='text-red-500'>{errors.password.message}</div>}

@@ -28,8 +28,10 @@ export default {
           '-moz-appearance': 'textfield',
         },
       });
+      
     },
+    require('daisyui'),    
   ],
-  
+
 }
 

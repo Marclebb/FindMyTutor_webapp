@@ -19,8 +19,19 @@ function Signup1() {
   const password = watch("password");
   const Navigate=useNavigate();
 
-  Axios.defaults.withCredentials=true;
-
+  //Axios.defaults.withCredentials=true;
+  
+  const checkPhoneExists = async (phoneNumber) => {
+    try {
+        const response = await Axios.get('http://localhost:3001/auth/phoneexists', { 
+            params: { phoneNumber: phoneNumber }
+        });
+        return response.data.exists;
+    } catch (error) {
+        console.error(error);
+        return false;
+    }
+};
 
   const checkEmailExists = async (email) => {
     try {
@@ -65,9 +76,8 @@ function Signup1() {
         })
         .catch((error) => {
             console.log(error);
+            return <div>ERROR WHILE SUBMITTING DATA</div>
         });
-         
-
 };
 
 
@@ -83,7 +93,7 @@ function Signup1() {
   };
 
   return (
-    <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-24 lg:px-8">
+    <div className="flex min-h-full flex-1 flex-col justify-center px-8 py-24 lg:px-8 bg-gray-50">
       <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <Link to="/">
@@ -96,7 +106,7 @@ function Signup1() {
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <div className={`${next ? 'hidden' : 'contents'}`}>
-            <h3 className="text-center text-2xl mt-10 font-bold mb-9">Choose your account type</h3>
+            <h3 className="text-center text-2xl mt-10 font-bold mb-9 text-gray-600">Choose your account type</h3>
             <ul className="grid w-full gap-6 md:grid-cols-1">
               <li>
                 <input
@@ -110,7 +120,7 @@ function Signup1() {
                 />
                 <label
                   htmlFor="tutor"
-                  className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
+                  className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-transparent border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
                 >
                   <div className='flex-1 flex justify-between'>
                     <div className="w-full text-lg font-semibold">I am a Tutor</div>
@@ -130,7 +140,7 @@ function Signup1() {
                 />
                 <label
                   htmlFor="student"
-                  className="inline-flex items-center justify-between w-full p-5 text-gray-500 bg-white border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
+                  className="inline-flex items-center justify-between w-full p-5 bg-transparent text-gray-500 border border-gray-200 rounded-lg cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400"
                 >
                   <div className="flex-1 flex justify-between">
                     <div className="w-full text-lg font-semibold">I am a Student</div>
@@ -146,7 +156,7 @@ function Signup1() {
 
 
           <div className={`${next ? 'contents' : 'hidden'}`}>
-            <h3 className="text-center text-2xl mt-10 font-bold mb-9">Fill in your personal information:</h3>
+            <h3 className="text-center text-2xl mt-10 font-bold mb-9 text-gray-600">Fill in your personal information:</h3>
 
             <label className="block text-sm font-medium leading-6 text-gray-900">First Name</label>
             <div className="mt-2">
@@ -154,8 +164,9 @@ function Signup1() {
                 id="firstname"
                 name="firstname"
                 type="text"
-                {...register("firstname", { required: "First name is required" })}
-                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                {...register("firstname", { required: "First name is required",
+                                            maxLength: { value: 45, message: "First name cannot exceed 45 characters" }})}
+                className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {isSubmitted && errors.firstname && <div className='text-red-500'>{errors.firstname.message}</div>}
             </div>
@@ -166,8 +177,9 @@ function Signup1() {
                 id="lastname"
                 name="lastname"
                 type="text"
-                {...register("lastname", { required: "Last name is required" })}
-                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                {...register("lastname", { required: "Last name is required",
+                                           maxLength: { value: 45, message: "last name cannot exceed 45 characters" } })}
+                className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {isSubmitted && errors.lastname && <div className='text-red-500'>{errors.lastname.message}</div>}
             </div>
@@ -186,15 +198,19 @@ function Signup1() {
                             pattern: {
                             value: /^\+961[0-9]{8}$/,
                             message: "Phone number must start with +961 followed by exactly 8 digits"
+                          },
+                          validate: async (value) => {
+                            const phoneexists = await checkPhoneExists(value);
+                            return !phoneexists || "phone number already taken";
                           }
                          })}
-                       className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                       className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                        />
                  {isSubmitted && errors.phoneNumber &&(<div className='text-red-500'>{errors.phoneNumber.message}</div>)}
                </div>
 
 
-            <label className="block text-sm font-medium leading-6 text-gray-900">Enter your Email</label>
+            <label className="block text-sm font-medium leading-6 bg-transparent text-gray-900">Enter your Email</label>
             <div className="mt-2">
               <input
                 id="Email"
@@ -206,36 +222,39 @@ function Signup1() {
                     value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
                     message: "Invalid email address"
                   },
+                  maxLength: { value: 75, message: "Email address cannot exceed 75 characters" },
                   validate: async (value) => {
                     const emailExists = await checkEmailExists(value);
                     return !emailExists || "Email already taken";
                   }
                 })}
-                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {isSubmitted && errors.Email && <div className='text-red-500'>{errors.Email.message}</div>}
             </div>
            
             <label className="block text-sm font-medium leading-6 text-gray-900">Create a password</label>
-                  <div className="mt-2">
-                       <input
-                        id="password"
-                        name="password"
-                        type="password"
-                      {...register("password", {
-                      required: "Password is required",
-                        minLength: {
-                        value: 8,
-                        message: "Password must be at least 8 characters"
-                        },
-                      pattern: {
-                      value: /^(?=.*[0-9])(?=.*[!@#$%^&*?><:;[}{}=_+-|`\`/()])/, 
-                      message: "Password must include at least one number and one special character"
-                       }
-                     })}
-    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
+<div className="mt-2">
+  <input
+    id="password"
+    name="password"
+    type="password"
+    {...register("password", {
+      required: "Password is required",
+      minLength: {
+        value: 8,
+        message: "Password must be at least 8 characters"
+      },
+      pattern: {
+        value: /^(?=.*[0-9])(?=.*[!@#$%^&*?><:;[\]{}=_+\-|`~()\\]).{8,}$/,
+        message: "Password must include at least one number and one special character"
+      }
+    })}
+    className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" 
+  />
   {isSubmitted && errors.password && <div className='text-red-500'>{errors.password.message}</div>}
-            </div>
+</div>
+
             <label className="block text-sm font-medium leading-6 text-gray-900">Confirm your password</label>
             <div className="mt-2">
               <input
@@ -251,13 +270,13 @@ function Signup1() {
                   return true
                 },
               })}
-                className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                className="pl-2 block w-full rounded-md border-0 py-1.5 bg-transparent text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
               />
               {isSubmitted && errors.cpassword && <div className='text-red-500'>{errors.cpassword.message}</div>}
               
             </div>
           
-            <label className="block text-sm font-medium leading-6 text-gray-900">Choose a profile picture (optional)</label>
+            <label className="block text-sm bg-transparent font-medium leading-6 text-gray-900">Choose a profile picture (optional)</label>
                   <div className="mt-2">
                     <input 
                     id="profilePicture"
@@ -271,25 +290,42 @@ function Signup1() {
                           file.length === 0 || (file[0] && file[0].type.startsWith("image/")) || "Only image files are allowed",
                       },
                     })}
-                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="pl-2 block w-full rounded-md bg-transparent border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                 {isSubmitted && errors.profilePicture && <div className='text-red-500'>{errors.profilePicture.message}</div>}
                   </div>
                  {accounttype ==='tutor'  && (
                   <div>
-                  <label className="block text-sm font-medium leading-6 text-gray-900">How many years of teaching experience do you have?</label>
+                  <label className="block text-sm font-medium  leading-6 text-gray-900">How many years of teaching experience do you have?(optional)</label>
                     <input 
-                    id="yearsofexperience"
-                    name="yearsofexperience"
-                    type="number"
-                    {...register("yearsofexperience", {
+                    id="experience_years"
+                    name="experience_years"
+                    type="text"
+                    {...register("experience_years", {
+                      required:false,
+                      pattern:{
+                        value:/^(?:[1-9]|1[0-9]|2[0-5])$/,
+                        message:'Invalid input, type a number between 1 and 25'
+                      }
+                    })}
+                    className="pl-2 block w-full bg-transparent rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    />
+                     {isSubmitted && errors.experience_years && <div className='text-red-500'>{errors.experience_years.message}</div>}
+
+                  <label className="block text-sm font-medium leading-6 text-gray-900">What is your main certification or degree field? (optional)</label>
+                    <input 
+                    id="certificate"
+                    name="certificate"
+                    type="text"
+                    {...register("certificate", {
                       required:false,
                     })}
-                    className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    className="pl-2 block w-full rounded-md bg-transparent border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
                   </div>
+                      
                       )}
-                  <label className="block text-sm font-medium leading-6 text-gray-900">Provide a Bio (optional)</label>
+                  <label className="block text-sm font-medium leading-6 text-black">Provide a Bio (optional)</label>
                   <div className="mt-2">
                     <textarea 
                     id="Bio"
@@ -297,7 +333,7 @@ function Signup1() {
                     maxLength={350}
                     rows={6}
                     cols={50}
-                    className="w-full h-auto resize-none border border-gray-300 p-2 rounded-md disabled:opacity-50"
+                    className="w-full h-auto resize-none border bg-transparent border-gray-300 p-2 rounded-md disabled:opacity-50 text-black"
                     {...register("Bio",{required:false})}
                      
                    // className="pl-2 block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
@@ -323,7 +359,7 @@ function Signup1() {
         </div>
        {isSubmiting && <div className="flex-col gap-4 w-full flex items-center justify-center">
   <div
-    class="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-yellow-400 rounded-full"
+    className="w-20 h-20 border-4 border-transparent text-blue-400 text-4xl animate-spin flex items-center justify-center border-t-yellow-400 rounded-full"
   >
     <div
       className="w-16 h-16 border-4 border-transparent text-sky-400 text-2xl animate-spin flex items-center justify-center border-t-sky-400 rounded-full"

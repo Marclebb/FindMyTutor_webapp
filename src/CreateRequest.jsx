@@ -18,7 +18,8 @@ function CreateRequest() {
     selecttime: [],
     selectlocation:[],
     selectplatform:[],
-    selectprice:[]
+    selectprice:[],
+    selectduration:[]
   })
 
   const onSubmit = (data) => {
@@ -30,7 +31,7 @@ function CreateRequest() {
       }
     }).then(response=>{
       console.log(response.data);
-      console.log("siccessfully added")
+      console.log("successfully added")
       navigate("/Card")
     }).catch(error=>{
       console.log(error)
@@ -44,7 +45,6 @@ function CreateRequest() {
     const fetchData = async () => {
       try {
         const response = await axios.get('http://localhost:3001/createpost/postinfo');
-        console.log("api response: ",response.data)
         setoptions(response.data);
       
       } catch (error) {
@@ -73,13 +73,12 @@ function CreateRequest() {
       setRole(decoded.role);
       console.log("role is :", decoded.role)
     } else {
-      
       console.log("No token found, user needs to log in");
     }
   }, []);
   
   return (
-    <div className="font-[sans-serif] bg-gray-50 min-h-screen lg:mt-2  pt-20 relative z-10">
+    <div className="font-[sans-serif] bg-gray-50 min-h-screen lg:mt-2  pt-20 relative z-10 text-black">
       {/* Intro Section */}
       <div className={`flex flex-col items-center justify-center text-center ${next ? 'hidden' : 'content'}`}>
         {role === 'student' && ( 
@@ -188,8 +187,24 @@ function CreateRequest() {
             </div>
             <p className="text-xs text-gray-700">*For fair pricing you can only choose from a set of selected prices</p>
           </div>
+          
           {/* Right Column */}
           <div className="w-full lg:w-1/2 p-5 pb-4">
+          <div className="relative flex items-center pb-2">
+              <label className="text-[13px] bg-gray-50 text-black absolute px-2 top-[-10px] left-[18px] z-10">
+                Duration 
+              </label>
+              <select
+                {...register('duration_id', { required: 'Please enter a duration for the course' })}
+                className="px-4 py-3.5 bg-transparent text-black w-full text-sm border-2 border-gray-400 focus:border-blue-500 rounded outline-none relative z-0"
+              >
+                <option value="" disabled>Select a Duration for the course </option>
+                {option.selectduration && option.selectduration.map(option => (
+                  <option key={option.value} value={option.value}>{option.label}</option>
+                ))}
+              </select>
+              {errors.duration_id && (<div className="text-red-500 text-xs mt-1 z-10">{errors.duration_id.message}</div>)}
+            </div>
             {/* Learning Way - Radio Buttons */}
             <div className="relative flex flex-col items-start pb-7">
             {role ==='student' &&  (<label className="text-[13px] bg-gray-50 text-black px-2 mb-2 relative z-10">
@@ -237,22 +252,22 @@ function CreateRequest() {
                  <option value="" disabled> Select a learning method </option>
                 {watchLearningWay === '1' && (
                   <>
-                <option key="1" value="1">Synchronus online teaching</option>
-                <option key="2" value="2">Asynchronus online teaching </option>
-                <option key="3" value="3">Self paced learning</option>
-                <option key="4" value="4">Collaborative learning (online)</option>
-                <option key="5" value="5">One to one online sessions</option>
+                <option key="1" value="1" title="Traditional classroom instruction where teachers and students are present at the same time (online), students attends a class given by their tutor with other students">Synchronus online teaching</option>
+                <option key="2" value="2" title="Students access materials and complete tasks at their own pace online, they don't have to be present in real time with the instructor,but there are deadlines in which a student can learn the material (e.g., pre-recorded lectures, documentations...)">Asynchronus online teaching </option>
+                <option key="3" value="3" title="Similar to asynchronus but the student has complete control over the material,there are no deadlines">Self paced learning</option>
+                <option key="4" value="4" title="Group work, discussions, or projects conducted entirely online">Collaborative learning (online)</option>
+                <option key="5" value="5" title="Students learn with their tutor only, in an one to one real time sessions (online)">One to one online sessions</option>
                 </>)}
                 {watchLearningWay === '2' && ( //learning way is onsite ??
                   <>
-                <option key="6" value="6">Synchronus onsite(in-person) teaching</option>
-                <option key="7" value="7">One to one sessions</option>
-                <option key="8" value="8">Collaborative teaching</option>
+                <option key="6" value="6" title="Traditional classroom instruction where teachers and students are present at the same time in the same physical space, students attends a class given by their tutor with other students">Synchronus onsite(in-person) teaching</option>
+                <option key="7" value="7" title="Students learn with their tutor only, in an one to one real time sessions in a real physical space">One to one sessions</option>
+                <option key="8" value="8" title="Group work, discussions, or projects conducted in a real physical space">Collaborative teaching</option>
                 </>)}
                 {watchLearningWay === '3' && (
                   <>
-                <option key="9"  value="9">Flipped classroom</option>
-                <option key="10" value="10">Blended learning</option>
+                <option key="9"  value="9" title="Students study content online at home (asynchronous) and then come to class for in-person activities (synchronous).">Flipped classroom</option>
+                <option key="10" value="10" title="Combines in-person classroom sessions with online activities or materials (both synchronous and asynchronous).">Blended learning</option>
                 </>)}
               </select>
               {errors.learning_method_id && (

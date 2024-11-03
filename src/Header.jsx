@@ -23,7 +23,7 @@ function Header() {
   }, []);
 
 return (
-    <div className=" pb-10 sticky z-50 top-0">
+    <div className=" pb-10 sticky z-50 top-0 text-gray-700">
       <header className="fixed top-0 left-0 right-0 z-50 bg-white shadow-lg">
         
         <nav className="flex items-center justify-between bg-white" aria-label="Global">
@@ -61,7 +61,7 @@ return (
             <Link to="/CreateRequest" className={`p-2 ${location.pathname === '/CreateRequest' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Create Post</Link>
             )}
             <Link to="/MyMatches" className={`p-2 ${location.pathname === '/MyMatches' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>My Matches</Link>
-            <Link to="/Profile" className={`p-2 ${location.pathname === '/Profile' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Profile</Link>
+            <Link to="/MyProfile" className={`p-2 ${location.pathname === '/MyProfile' ? 'border-b-4 border-yellow-400' : ''}hover:border-b-4 border-yellow-400`}>Profile</Link>
           </div>
           
          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
@@ -94,7 +94,7 @@ return (
             <Link to="/CreateRequest" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50" onClick={()=>setIsMenuOpen(false)}>Create Post</Link>
             )}
                   <Link to="/MyMatches" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>My Matches</Link>
-                  <Link to="/Profile" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>Profile</Link>
+                  <Link to="/MyProfile" className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"  onClick={() => setIsMenuOpen(false)}>Profile</Link>
                 </div>
               </div>
             </div>
